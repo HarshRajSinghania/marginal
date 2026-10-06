@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from marginal.cli.help import run_help
 from marginal.cli.init import run_init
 from marginal.cli.review import run_review
 
@@ -38,7 +39,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     if args.command == "help":
-        return _run_help(parser, subparsers, args.topic)
+        return run_help(parser, subparsers, args.topic)
     if args.command == "init":
         return run_init(args.path, force=args.force)
     if args.command == "review":
@@ -46,22 +47,6 @@ def main(argv: list[str] | None = None) -> int:
 
     parser.error(f"unknown command: {args.command}")
     return 2
-
-
-def _run_help(
-    parser: argparse.ArgumentParser,
-    subparsers: argparse._SubParsersAction,
-    topic: str | None,
-) -> int:
-    if topic is None:
-        parser.print_help()
-        return 0
-    command_parser = subparsers.choices.get(topic)
-    if command_parser is None:
-        parser.error(f"unknown command: {topic}")
-        return 2
-    command_parser.print_help()
-    return 0
 
 
 if __name__ == "__main__":
